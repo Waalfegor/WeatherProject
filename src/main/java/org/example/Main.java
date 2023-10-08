@@ -24,10 +24,12 @@ public class Main {
         Element tableWht = page.select("table[class=wt]").first();
         Elements names = tableWht.select("tr[class=wth]");
         Elements values = tableWht.select("tr[valign=top]");
+        int index = 0;
         for (Element name: names) {
             String dateString=name.select("th[id=dt]").text();
             String date = getDateFromString(dateString);
             System.out.println(date + "    Явления    Температура    Давленииие    Влажность    Ветер");
+            index += printValues(values,index);
         }
 
     }
@@ -41,5 +43,24 @@ public class Main {
             return matcher.group();
         }
         throw new Exception("Cant extract date from string");
+    }
+
+    private static int printValues(Elements values, int index) {
+        int iterationCount = 4;
+        if (index == 0) {
+            Element valueLn = values.get(3);
+            boolean isMorning = valueLn.text().contains("Утро");
+            if (isMorning) {
+                iterationCount = 3;
+            }
+        }
+        for (int i = 0; i < iterationCount; i++) {
+            Element valueLine = values.get(index + i);
+            for (Element td : valueLine.select("td")) {
+                System.out.print(td.text() + "    ");
+            }
+            System.out.println();
+        }
+        return iterationCount;
     }
 }
