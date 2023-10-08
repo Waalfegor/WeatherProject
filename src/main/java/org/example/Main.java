@@ -26,8 +26,8 @@ public class Main {
         Elements values = tableWht.select("tr[valign=top]");
         int index = 0;
         for (Element name: names) {
-            String dateString=name.select("th[id=dt]").text();
-            String date = getDateFromString(dateString);
+            String stringDate=name.select("th[id=dt]").text();
+            String date = getDateFromString(stringDate);
             System.out.println(date + "    Явления    Температура    Давленииие    Влажность    Ветер");
             index += printValues(values,index);
         }
@@ -47,13 +47,23 @@ public class Main {
 
     private static int printValues(Elements values, int index) {
         int iterationCount = 4;
+
         if (index == 0) {
             Element valueLn = values.get(3);
             boolean isMorning = valueLn.text().contains("Утро");
+            boolean isDay  = valueLn.text().contains("День");
+            boolean isEvening  = valueLn.text().contains("Вечер");
             if (isMorning) {
                 iterationCount = 3;
             }
+            if (isDay) {
+                iterationCount = 2;
+            }
+            if (isEvening) {
+                iterationCount = 1;
+            }
         }
+
         for (int i = 0; i < iterationCount; i++) {
             Element valueLine = values.get(index + i);
             for (Element td : valueLine.select("td")) {
